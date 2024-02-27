@@ -7,7 +7,12 @@ load_dotenv()
 
 app = FastAPI()
 
-@app.get("/login")
+@app.get("/", tags=["ROOT"])
+async def root(request: Request) -> RedirectResponse:
+  return RedirectResponse(request.url_for("github_login"))
+
+
+@app.get("/login", tags=["LOGIN"])
 async def github_login(request: Request) -> RedirectResponse:
   client_id = os.getenv("GITHUB_CLIENT_ID")
   redirect_uri = request.url_for("authorize")
