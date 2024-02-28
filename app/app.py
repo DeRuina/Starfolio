@@ -1,9 +1,10 @@
 from fastapi import FastAPI, Request, HTTPException, Cookie
 from dotenv import load_dotenv
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 import os
 import binascii
 import httpx
+import json
 
 
 load_dotenv()  # Load environment variables from .env file for configuration
@@ -49,7 +50,7 @@ async def exchange_code_for_token(code:str, client_id: str, client_secret: str) 
       raise HTTPException(status_code=response.status_code, detail="Failed to make request to GitHub OAuth")
     
 # Fetch starred repositories
-async def get_starred_repositories(access_token: str) -> list:
+async def get_starred_repositories(access_token: str) -> Response:
   async with httpx.AsyncClient() as client:
     headers = {"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
     response = await client.get(url="https://api.github.com/user/starred", headers=headers)
@@ -62,9 +63,12 @@ async def get_starred_repositories(access_token: str) -> list:
           "URL": repo["url"], 
           **({"licesnse": repo["license"]["name"]} if repo["license"] is not None else {}),
           "topics": repo["topics"]
-        } 
-        for repo in repos if not repo["private"]]
-      return public_repos
+        } for repo in repos if not repo["private"]]
+      d = {"number_of_starred_repositories": len(public_repos), "repositories_list": public_repos}
+      prettify_json = json.dumps(d, indent=4)
+      # Found the info of serialising an object before return from here:
+      # https://stackoverflow.com/questions/73972660/how-to-return-data-in-json-format-using-fastapi 
+      return Response(content=prettify_json, media_type="application/json")
     else:
       raise HTTPException(status_code=response.status_code, detail="Failed to make Get request")
   
