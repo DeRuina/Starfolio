@@ -49,6 +49,8 @@ async def authorize(request: Request, state: str = Cookie(None)):
   }
   headers = {"Accept": "application/json"}
 
+  # Found that is better to use httpx.AsyncClient() for asynchronous requests 
+  # from this Medium post: https://medium.com/featurepreneur/what-is-httpx-a0071df05c4a
   async with httpx.AsyncClient() as client:
     response = await client.post(url="https://github.com/login/oauth/access_token", params=params, headers=headers)
     if response.status_code == 200:
