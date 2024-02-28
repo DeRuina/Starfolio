@@ -61,7 +61,7 @@ async def get_starred_repositories(access_token: str) -> Response:
           "name": repo["name"], 
           "description": repo["description"], 
           "URL": repo["url"], 
-          **({"licesnse": repo["license"]["name"]} if repo["license"] is not None else {}),
+          **({"license": repo["license"]["name"]} if repo["license"] is not None else {}),
           "topics": repo["topics"]
         } for repo in repos if not repo["private"]]
       d = {"number_of_starred_repositories": len(public_repos), "repositories_list": public_repos}
