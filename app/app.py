@@ -22,7 +22,8 @@ async def root(request: Request) -> RedirectResponse:
 async def github_login(request: Request) -> RedirectResponse:
   client_id = os.getenv("GITHUB_CLIENT_ID")
   state = binascii.hexlify(os.urandom(16)).decode() # To prevent CSRF attacks
-  response = RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={client_id}&state={state}")
+  redirect_uri = request.url_for("authorize")
+  response = RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={client_id}&state={state}&redirect_uri={redirect_uri}")
   response.set_cookie(key="state", value=state, secure=True)
   return response
 
@@ -54,7 +55,15 @@ async def get_starred_repositories(access_token: str) -> list:
     response = await client.get(url="https://api.github.com/user/starred", headers=headers)
     if response.status_code == 200:
       repos = response.json()
-      public_repos = [repo for repo in repos if not repo["private"]]
+      public_repos = [
+        {
+          "name": repo["name"], 
+          "description": repo["description"], 
+          "URL": repo["url"], 
+          **({"licesnse": repo["license"]["name"]} if repo["license"] is not None else {}),
+          "topics": repo["topics"]
+        } 
+        for repo in repos if not repo["private"]]
       return public_repos
     else:
       raise HTTPException(status_code=response.status_code, detail="Failed to make Get request")
