@@ -2,7 +2,7 @@
 
 ## Short Description
 
-This project is a FastAPI application that allows users to authenticate with GitHub using OAuth and fetch their starred repositories. The application provides a web interface for users to log in and view their starred repositories, as well as a command-line interface (CLI) for fetching the repositories programmatically.
+This project is a FastAPI application that allows users to authenticate with GitHub using OAuth and fetch their starred repositories. The application provides a web interface for users to log in and view their starred repositories, like a portfolio, hence Starfolio. Working as well through the command-line interface (CLI) for fetching the repositories programmatically.
 
 ## Instructions
 
