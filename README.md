@@ -31,16 +31,16 @@ This project is a FastAPI application that allows users to authenticate with Git
 ### Running the Application
 
 1. Install the required dependencies by running
-2. ```bash
-3. pip install fastapi uvicorn httpx python-dotenv
-4. ```
-5. Start the application by running
-6. ```bash
-7. python main.py
-8. ```
-9. Open your web browser and navigate to `http://127.0.0.1:8000`.
-10. Click on the "Login with GitHub" button to authenticate.
-11. After successful authentication, you will be redirected to the `/starred` endpoint, where you can view your starred repositories.
+```bash
+ pip install fastapi uvicorn httpx python-dotenv
+```
+2. Start the application by running
+```bash
+python main.py
+```
+3. Open your web browser and navigate to `http://127.0.0.1:8000`.
+4. Click on the "Login with GitHub" button to authenticate.
+5. After successful authentication, you will be redirected to the `/starred` endpoint, where you can view your starred repositories.
 
 ### Using the Command-Line Interface (CLI)
 
