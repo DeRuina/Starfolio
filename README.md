@@ -26,7 +26,7 @@ This project is a FastAPI application that allows users to authenticate with Git
 ### Environment Setup
 
 1. Rename the `.env.example` file to `.env`.
-2. Open the `.env` file and fill in the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` fields with the values you received from GitHub.
+2. Open the `.env` file and fill in the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` fields with the values you received from GitHub **between the double quotes**.
 
 ### Running the Application
 
