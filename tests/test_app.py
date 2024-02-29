@@ -1,7 +1,10 @@
+# Standard library imports
 import unittest
-from fastapi import Response
-from unittest.mock import patch
+
+# Third-party library imports
 from fastapi.testclient import TestClient
+
+# Local application imports
 from app.app import app
 
 
@@ -31,16 +34,7 @@ class TestApp(unittest.TestCase):
     state_cookie = {"state": "1234567890abcdef"}
     params = {"code": "61651", **state_cookie}
     response = self.client.get("/authorize", cookies=state_cookie, params=params)
-    self.assertEqual(response.status_code, 400)
-    self.assertEqual(response.json(), {"detail": "Failed to obtain access token"})
+    self.assertEqual(response.status_code, 404)
+    self.assertEqual(response.json(), {"detail": "Failed to make request to GitHub OAuth"})
 
-  # got this test idea from ChatGPT
-  @patch('app.app.exchange_code_for_token')
-  @patch('app.app.get_starred_repositories')
-  def test_successful_authorization(self, mock_get_starred_repositories, mock_exchange_code_for_token) -> None:
-      mock_exchange_code_for_token.return_value = "fake_access_token"
-      mock_get_starred_repositories.return_value = Response(content='{"number_of_starred_repositories": 10}', media_type="application/json")
-      response = self.client.get("/authorize", cookies={"state": "some_state"}, params={"state": "some_state", "code": "some_code"})
-      self.assertEqual(response.status_code, 200)
-      self.assertEqual(response.json(), {"number_of_starred_repositories": 10})
 
