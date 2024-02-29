@@ -25,7 +25,7 @@ async def github_login(request: Request) -> RedirectResponse:
   state = binascii.hexlify(os.urandom(16)).decode() # To prevent CSRF attacks
   redirect_uri = request.url_for("authorize")
   response = RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={client_id}&state={state}&redirect_uri={redirect_uri}")
-  response.set_cookie(key="state", value=state, secure=True)
+  response.set_cookie(key="state", value=state, secure=True,  httponly=True, samesite='strict')
   return response
 
 # Exchange the authorization code for an access token
@@ -56,18 +56,20 @@ async def get_starred_repositories(access_token: str) -> Response:
     response = await client.get(url="https://api.github.com/user/starred", headers=headers)
     if response.status_code == 200:
       repos = response.json()
-      public_repos = [
+      public_repos = [ # list comprehension 
         {
           "name": repo["name"], 
           "description": repo["description"], 
           "URL": repo["url"], 
           **({"license": repo["license"]["name"]} if repo["license"] is not None else {}),
           "topics": repo["topics"]
-        } for repo in repos if not repo["private"]]
-      d = [
+        } for repo in repos if not repo["private"]
+        ]
+      data = [
         {"number_of_starred_repositories": len(public_repos), 
-        **({"repositories_list": public_repos} if len(public_repos) != 0 else {})}]
-      prettify_json = json.dumps(d, indent=4)
+        **({"repositories_list": public_repos} if len(public_repos) != 0 else {})}
+        ]
+      prettify_json = json.dumps(data, indent=4)
       # Found the info of serialising an object before return from here:
       # https://stackoverflow.com/questions/73972660/how-to-return-data-in-json-format-using-fastapi 
       return Response(content=prettify_json, media_type="application/json")
