@@ -51,11 +51,13 @@ async def exchange_code_for_token(code:str, client_id: str, client_secret: str) 
   except (httpx.RequestError, httpx.HTTPStatusError, httpx.TimeoutException) as ex:
         raise HTTPException(status_code=500, detail=f"Failed to make request: {ex}")
 
+# saving the token to the .env 
 async def save_token_to_env(value: str) -> None:
-    with open(".env", "a") as file1:#, open(".env.token", "w") as file2:
-      file1.write(f'\nACCESS_TOKEN="{value}"')
-      #file2.write(f'ACCESS_TOKEN="{value}"')
-  
+    with open(".env", "a") as file1:
+      file1.write(f'\nACCESS_TOKEN="{value}"')  
+    load_dotenv()
+
+# deleting the token from .env so next server restart the old token won't load
 async def delete_token_from_env() -> None:
   client_id = os.getenv("GITHUB_CLIENT_ID")
   client_secret = os.getenv("GITHUB_CLIENT_SECRET")
@@ -87,7 +89,6 @@ async def authorize(request: Request, state: str = Cookie(None)) -> RedirectResp
 # Fetch starred repositories
 @app.get("/starred", tags=["Starred Repositories"])
 async def get_starred_repositories() -> Response:
-  load_dotenv()
   access_token = os.getenv("ACCESS_TOKEN")
   await delete_token_from_env()
   try:
