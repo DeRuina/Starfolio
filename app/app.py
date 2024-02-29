@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Request, HTTPException, Cookie
-from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 from fastapi.responses import RedirectResponse, Response
 import os
@@ -13,8 +12,6 @@ load_dotenv()  # Load environment variables from .env file for configuration
 
 app = FastAPI() # FastAPI instance for building the web application
 
-app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
-
 # Redirect the user to /login
 @app.get("/", tags=["Root"])
 async def root(request: Request) -> RedirectResponse:
@@ -27,7 +24,7 @@ async def github_login(request: Request) -> RedirectResponse:
   state = binascii.hexlify(os.urandom(16)).decode() # To prevent CSRF attacks
   redirect_uri = request.url_for("authorize")
   response = RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={client_id}&state={state}&redirect_uri={redirect_uri}")
-  response.set_cookie(key="state", value=state, secure=True,  httponly=True, samesite='strict')
+  response.set_cookie(key="state", value=state, secure=True,  httponly=True)
   return response
 
 # Exchange the authorization code for an access token
@@ -53,7 +50,19 @@ async def exchange_code_for_token(code:str, client_id: str, client_secret: str) 
         raise HTTPException(status_code=response.status_code, detail="Failed to make request to GitHub OAuth")
   except (httpx.RequestError, httpx.HTTPStatusError, httpx.TimeoutException) as ex:
         raise HTTPException(status_code=500, detail=f"Failed to make request: {ex}")
-    
+
+async def save_token_to_env(value: str) -> None:
+    with open(".env", "a") as file1:#, open(".env.token", "w") as file2:
+      file1.write(f'\nACCESS_TOKEN="{value}"')
+      #file2.write(f'ACCESS_TOKEN="{value}"')
+  
+async def delete_token_from_env() -> None:
+  client_id = os.getenv("GITHUB_CLIENT_ID")
+  client_secret = os.getenv("GITHUB_CLIENT_SECRET")
+  with open(".env", "w") as file:
+    file.write(f'GITHUB_CLIENT_ID="{client_id}"\nGITHUB_CLIENT_SECRET="{client_secret}"')
+
+
 # Perform checks and call helper functions
 @app.get("/authorize", tags=["Authorize"])
 async def authorize(request: Request, state: str = Cookie(None)) -> RedirectResponse:
@@ -72,13 +81,15 @@ async def authorize(request: Request, state: str = Cookie(None)) -> RedirectResp
   client_secret = os.getenv("GITHUB_CLIENT_SECRET")
 
   access_token = await exchange_code_for_token(code, client_id, client_secret)
-  request.session["access_token"] = access_token
+  await save_token_to_env(access_token)
   return RedirectResponse(url=request.url_for('get_starred_repositories'))
   
-  # Fetch starred repositories
+# Fetch starred repositories
 @app.get("/starred", tags=["Starred Repositories"])
-async def get_starred_repositories(request: Request) -> Response:
-  access_token = request.session.get("access_token")
+async def get_starred_repositories() -> Response:
+  load_dotenv()
+  access_token = os.getenv("ACCESS_TOKEN")
+  await delete_token_from_env()
   try:
     async with httpx.AsyncClient() as client:
       headers = {"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
@@ -106,4 +117,6 @@ async def get_starred_repositories(request: Request) -> Response:
         raise HTTPException(status_code=response.status_code, detail="Failed to make Get request")
   except (httpx.RequestError, httpx.HTTPStatusError, httpx.TimeoutException) as ex:
         raise HTTPException(status_code=500, detail=f"Failed to make request: {ex}")
+  
+
   
