@@ -94,6 +94,3 @@ async def get_starred_repositories() -> Response:
         raise HTTPException(status_code=response.status_code, detail="Failed to make Get request")
   except (httpx.RequestError, httpx.HTTPStatusError, httpx.TimeoutException) as ex:
         raise HTTPException(status_code=500, detail=f"Failed to make request: {ex}")
-  
-
-  
