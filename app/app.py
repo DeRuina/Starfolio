@@ -64,7 +64,9 @@ async def get_starred_repositories(access_token: str) -> Response:
           **({"license": repo["license"]["name"]} if repo["license"] is not None else {}),
           "topics": repo["topics"]
         } for repo in repos if not repo["private"]]
-      d = {"number_of_starred_repositories": len(public_repos), "repositories_list": public_repos}
+      d = [
+        {"number_of_starred_repositories": len(public_repos), 
+        **({"repositories_list": public_repos} if len(public_repos) != 0 else {})}]
       prettify_json = json.dumps(d, indent=4)
       # Found the info of serialising an object before return from here:
       # https://stackoverflow.com/questions/73972660/how-to-return-data-in-json-format-using-fastapi 
