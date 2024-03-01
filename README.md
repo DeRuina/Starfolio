@@ -53,6 +53,23 @@ curl -X GET "http://127.0.0.1:8000/starred" -H "Authorization: Bearer ${ACCESS_T
 
 - Ensure that your `.env` file is not committed to version control systems like Git to protect your sensitive credentials.
 
+## Running Tests
+
+### Prerequisites
+
+- Python 3.6 or newer
+- All project dependencies installed (as listed in the instructions)
+
+### Running the Tests
+
+1. **Navigate to the project directory**: Open a terminal and navigate to the root directory of your project.
+
+2. **Run the tests**: Execute the following command to run the tests:
+```bash
+python3 -m unittest tests.test_app
+```
+
+
 
 ## Author
 
