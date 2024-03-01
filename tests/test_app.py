@@ -34,7 +34,7 @@ class TestApp(unittest.TestCase):
     state_cookie = {"state": "1234567890abcdef"}
     params = {"code": "61651", **state_cookie}
     response = self.client.get("/authorize", cookies=state_cookie, params=params)
-    self.assertEqual(response.status_code, 404)
-    self.assertEqual(response.json(), {"detail": "Failed to make request to GitHub OAuth"})
+    self.assertEqual(response.status_code, 400)
+    self.assertEqual(response.json(), {"detail": "Failed to obtain access token"})
 
 

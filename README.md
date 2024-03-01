@@ -2,7 +2,7 @@
 
 ## Short Description
 
-This project is a FastAPI application that allows users to authenticate with GitHub using OAuth and fetch their starred repositories. The application provides a web interface for users to log in and view their starred repositories, as well as a command-line interface (CLI) for fetching the repositories programmatically.
+This project is a FastAPI application that allows users to authenticate with GitHub using OAuth and fetch their starred repositories. The application provides a web interface for users to log in and view their starred repositories, like a portfolio, hence Starfolio. Working as well through the command-line interface (CLI) for fetching the repositories programmatically.
 
 ## Instructions
 
@@ -26,12 +26,18 @@ This project is a FastAPI application that allows users to authenticate with Git
 ### Environment Setup
 
 1. Rename the `.env.example` file to `.env`.
-2. Open the `.env` file and fill in the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` fields with the values you received from GitHub.
+2. Open the `.env` file and fill in the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` fields with the values you received from GitHub **between the double quotes**.
 
 ### Running the Application
 
-1. Install the required dependencies by running `pip install fastapi uvicorn httpx python-dotenv`.
-2. Start the application by running `python3 main.py`.
+1. Install the required dependencies by running
+```bash
+ pip install fastapi uvicorn httpx python-dotenv
+```
+2. Start the application by running
+```bash
+python3 main.py
+```
 3. Open your web browser and navigate to `http://127.0.0.1:8000`.
 4. Click on the "Login with GitHub" button to authenticate.
 5. After successful authentication, you will be redirected to the `/starred` endpoint, where you can view your starred repositories.
@@ -46,6 +52,23 @@ curl -X GET "http://127.0.0.1:8000/starred" -H "Authorization: Bearer ${ACCESS_T
 ### Additional Notes
 
 - Ensure that your `.env` file is not committed to version control systems like Git to protect your sensitive credentials.
+
+## Running Tests
+
+### Prerequisites
+
+- Python 3.6 or newer
+- All project dependencies installed (as listed in the instructions)
+
+### Running the Tests
+
+1. **Navigate to the project directory**: Open a terminal and navigate to the root directory of your project.
+
+2. **Run the tests**: Execute the following command to run the tests:
+```bash
+python3 -m unittest tests.test_app
+```
+
 
 
 ## Author
