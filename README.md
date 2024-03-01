@@ -36,7 +36,7 @@ This project is a FastAPI application that allows users to authenticate with Git
 ```
 2. Start the application by running
 ```bash
-python main.py
+python3 main.py
 ```
 3. Open your web browser and navigate to `http://127.0.0.1:8000`.
 4. Click on the "Login with GitHub" button to authenticate.
@@ -46,7 +46,7 @@ python main.py
 
 1. After authenticating, you can use the following `curl` command to fetch your starred repositories programmatically:
 ```bash
-curl -X GET "http://127.0.0.1:8000/starred" -H "Authorization: Bearer $ACCESS_TOKEN"
+curl -X GET "http://127.0.0.1:8000/starred" -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 ### Additional Notes
