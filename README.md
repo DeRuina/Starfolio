@@ -14,6 +14,19 @@ This project is a FastAPI application that allows users to authenticate with Git
 - `httpx` (for making HTTP requests)
 - `python-dotenv` (for loading environment variables)
 
+## Getting Started
+
+To get started with the project, follow these steps:
+
+1. **Clone the Repository**: Open a terminal and run the following command to clone the repository:
+```bash
+git clone https://github.com/DeRuina/Starfolio.git 
+```
+2. **Navigate to the Project Directory**: Change to the project directory by running:
+```bash
+cd Starfolio
+```
+
 ### GitHub OAuth Setup
 
 1. Go to your GitHub account's [Developer Settings](https://github.com/settings/developers).
