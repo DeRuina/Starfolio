@@ -10,7 +10,7 @@ from fastapi.responses import RedirectResponse, Response
 import httpx
 
 # Local application imports
-from .helpers import exchange_code_for_token, save_token_to_env, delete_token_from_env
+from .helpers import exchange_code_for_token
 
 
 load_dotenv()  # Load environment variables from .env file for configuration
@@ -53,7 +53,7 @@ async def authorize(request: Request, state: str = Cookie(None)) -> RedirectResp
   client_secret = os.getenv("GITHUB_CLIENT_SECRET")
 
   access_token = await exchange_code_for_token(code, client_id, client_secret)
-  await save_token_to_env(access_token)
+  os.environ["ACCESS_TOKEN"] = access_token
   return RedirectResponse(url=request.url_for('get_starred_repositories'))
   
 # Fetch starred repositories
@@ -61,7 +61,6 @@ async def authorize(request: Request, state: str = Cookie(None)) -> RedirectResp
 async def get_starred_repositories() -> Response:
 
   access_token = os.getenv("ACCESS_TOKEN")
-  await delete_token_from_env()
   
   try:
     async with httpx.AsyncClient() as client:
