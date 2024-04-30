@@ -84,8 +84,6 @@ async def get_starred_repositories() -> Response:
           **({"repositories_list": public_repos} if len(public_repos) != 0 else {})}
           ]
         
-        # Found the info of serialising an object before return from here:
-        # https://stackoverflow.com/questions/73972660/how-to-return-data-in-json-format-using-fastapi 
         prettify_json = json.dumps(data, indent=4)
         return Response(content=prettify_json, media_type="application/json")
       

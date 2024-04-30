@@ -1,9 +1,5 @@
-# Standard library imports
-import os
-
 # Third-party library imports
 import httpx
-from dotenv import load_dotenv
 from fastapi import HTTPException
 
 # Exchange the authorization code for an access token
@@ -15,8 +11,6 @@ async def exchange_code_for_token(code:str, client_id: str, client_secret: str) 
   }
   headers = {"Accept": "application/json"}
 
-  # Found that is better to use httpx.AsyncClient() for asynchronous requests 
-  # from this Medium post: https://medium.com/featurepreneur/what-is-httpx-a0071df05c4a
   try:
     async with httpx.AsyncClient() as client:
       response = await client.post(url="https://github.com/login/oauth/access_token", params=params, headers=headers)
